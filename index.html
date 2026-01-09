@@ -13,9 +13,7 @@
     --text: #1f2937;
   }
 
-  * {
-    box-sizing: border-box;
-  }
+  * { box-sizing: border-box; }
 
   body {
     margin: 0;
@@ -58,9 +56,7 @@
     font-size: 14px;
   }
 
-  .field {
-    margin-bottom: 16px;
-  }
+  .field { margin-bottom: 16px; }
 
   .label {
     font-weight: 700;
@@ -123,13 +119,6 @@
     font-size: 22px;
     font-weight: 900;
   }
-
-  .copied {
-    font-size: 12px;
-    color: #059669;
-    margin-top: 4px;
-    display: none;
-  }
 </style>
 </head>
 
@@ -141,7 +130,7 @@
   <!-- 카드 1 -->
   <div class="card">
     <h2>레벨시퀀서 플레이 프레임 수</h2>
-    <div class="desc">이동거리 기준 시퀀서 프레임 계산</div>
+    <div class="desc">이동거리(cm) 기준 시퀀서 프레임 계산</div>
 
     <div class="field">
       <div class="label">FPS</div>
@@ -162,8 +151,8 @@
     <div class="field">
       <div class="label">이동거리</div>
       <div class="input-row">
-        <input id="distance1" type="number" value="10">
-        <div class="unit">m</div>
+        <input id="distance1" type="number" value="1000">
+        <div class="unit">cm</div>
       </div>
     </div>
 
@@ -173,13 +162,11 @@
       <div class="result-box" onclick="copyValue(this)">
         <small>프레임 수</small>
         <div id="frames1" class="value">0</div>
-        <div class="copied">복사됨</div>
       </div>
 
       <div class="result-box" onclick="copyValue(this)">
         <small>시퀀서 재생 시간 (s)</small>
         <div id="time1" class="value">0</div>
-        <div class="copied">복사됨</div>
       </div>
     </div>
   </div>
@@ -187,7 +174,7 @@
   <!-- 카드 2 -->
   <div class="card">
     <h2>nDisplay의 이동거리</h2>
-    <div class="desc">시퀀서 재생 시간 기준 이동거리 계산</div>
+    <div class="desc">시퀀서 재생 시간(s) 기준 이동거리(cm) 계산</div>
 
     <div class="field">
       <div class="label">FPS</div>
@@ -217,15 +204,13 @@
 
     <div class="results">
       <div class="result-box" onclick="copyValue(this)">
-        <small>이동거리</small>
+        <small>이동거리 (cm)</small>
         <div id="distance2" class="value">0</div>
-        <div class="copied">복사됨</div>
       </div>
 
       <div class="result-box" onclick="copyValue(this)">
         <small>프레임 수</small>
         <div id="frames2" class="value">0</div>
-        <div class="copied">복사됨</div>
       </div>
     </div>
   </div>
@@ -235,8 +220,8 @@
 <script>
 function calc() {
   const fps1 = +fps1Input.value;
-  const speed1 = +speed1Input.value / 3.6;
-  const dist1 = +distance1Input.value;
+  const speed1 = (+speed1Input.value / 3.6) * 100; // cm/s
+  const dist1 = +distance1Input.value; // cm
 
   const time1Val = dist1 / speed1;
   const frames1Val = time1Val * fps1;
@@ -245,22 +230,19 @@ function calc() {
   time1.textContent = time1Val.toFixed(2);
 
   const fps2 = +fps2Input.value;
-  const speed2 = +speed2Input.value / 3.6;
+  const speed2 = (+speed2Input.value / 3.6) * 100; // cm/s
   const time2Val = +time2Input.value;
 
   const dist2Val = speed2 * time2Val;
   const frames2Val = fps2 * time2Val;
 
-  distance2.textContent = dist2Val.toFixed(3);
+  distance2.textContent = dist2Val.toFixed(1);
   frames2.textContent = frames2Val.toFixed(0);
 }
 
 function copyValue(box) {
   const value = box.querySelector(".value").textContent;
   navigator.clipboard.writeText(value);
-  const copied = box.querySelector(".copied");
-  copied.style.display = "block";
-  setTimeout(() => copied.style.display = "none", 800);
 }
 
 const fps1Input = document.getElementById("fps1");
