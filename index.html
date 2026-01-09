@@ -3,255 +3,253 @@
 <head>
 <meta charset="UTF-8" />
 <title>nDisplay 이동 · 시퀀서 계산기</title>
+
 <style>
-  :root {
-    --bg: #fff9e6;
-    --card: #ffffff;
-    --accent: #f5c542;
-    --accent-dark: #e0aa00;
-    --result: #fff7bf;
-    --text: #1f2937;
-  }
+:root {
+  --bg: #fff9e6;
+  --card: #ffffff;
+  --accent: #f5c542;
+  --result: #fff7bf;
+  --text: #1f2937;
+  --muted: #6b7280;
+}
 
-  * { box-sizing: border-box; }
+* { box-sizing: border-box; }
 
-  body {
-    margin: 0;
-    padding: 24px;
-    background: var(--bg);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-      Roboto, "Noto Sans KR", Arial, sans-serif;
-    color: var(--text);
-  }
+body {
+  margin: 0;
+  padding: 24px;
+  background: var(--bg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Noto Sans KR", Arial, sans-serif;
+  color: var(--text);
+}
 
-  .container {
-    max-width: 420px;
-    margin: 0 auto;
-  }
+.container {
+  max-width: 350px;
+  margin: 0 auto;
+}
 
-  h1 {
-    font-size: 26px;
-    font-weight: 800;
-    margin-bottom: 24px;
-  }
+h1 {
+  font-size: 26px;
+  font-weight: 800;
+  margin-bottom: 24px;
+}
 
-  .card {
-    background: var(--card);
-    border-radius: 24px;
-    padding: 24px;
-    margin-bottom: 28px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-  }
+/* 카드 */
+.card {
+  background: var(--card);
+  border-radius: 22px;
+  padding: 22px;
+  margin-bottom: 28px;
+  box-shadow: 0 10px 26px rgba(0,0,0,0.06);
+}
 
-  .card h2 {
-    margin: 0;
-    font-size: 22px;
-    font-weight: 800;
-  }
+.card h2 {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 800;
+}
 
-  .desc {
-    margin-top: 6px;
-    margin-bottom: 20px;
-    color: #6b7280;
-    font-size: 14px;
-  }
+.desc {
+  margin: 6px 0 18px;
+  color: var(--muted);
+  font-size: 14px;
+}
 
-  .field { margin-bottom: 16px; }
+/* 2열 레이아웃 */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 140px;
+  gap: 28px;
+}
 
-  .label {
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
+/* 입력 */
+.field { margin-bottom: 14px; }
 
-  .input-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+.label {
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
 
-  input {
-    flex: 1;
-    padding: 12px 14px;
-    border-radius: 14px;
-    border: 2px solid var(--accent);
-    font-size: 16px;
-    text-align: right;
-  }
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-  input:focus {
-    outline: none;
-    border-color: var(--accent-dark);
-  }
+input {
+  flex: 1;
+  max-width: 100px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 2px solid var(--accent);
+  font-size: 15px;
+  text-align: right;
+}
 
-  .unit {
-    min-width: 40px;
-    font-weight: 700;
-    color: #6b7280;
-  }
+.unit {
+  min-width: 36px;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--muted);
+}
 
-  .divider {
-    border-top: 1px dashed #fde68a;
-    margin: 20px 0;
-  }
+/* 결과 영역 */
+.result-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
-  .results {
-    display: flex;
-    gap: 14px;
-  }
+.result-box {
+  background: var(--result);
+  border-radius: 16px;
+  padding: 14px;
+  cursor: pointer;
+}
 
-  .result-box {
-    flex: 1;
-    background: var(--result);
-    border-radius: 16px;
-    padding: 16px;
-    border-left: 6px solid var(--accent-dark);
-    cursor: pointer;
-  }
+.result-box small {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
 
-  .result-box small {
-    display: block;
-    color: #6b7280;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-
-  .value {
-    font-size: 22px;
-    font-weight: 900;
-  }
+.result-value {
+  font-size: 22px;
+  font-weight: 900;
+  text-align: right;
+}
 </style>
 </head>
 
 <body>
 <div class="container">
 
-  <h1>🧀 nDisplay 이동거리 · 시간 계산기</h1>
+<h1>🧀 nDisplay</h1>
+<h1>  이동거리 · 시간 계산기</h1>
 
-  <!-- 카드 1 -->
-  <div class="card">
-    <h2>레벨시퀀서 플레이 프레임 수</h2>
-    <div class="desc">이동거리(cm) 기준 시퀀서 프레임 계산</div>
+<!-- 카드 1 -->
+<div class="card">
+  <h2>레벨시퀀서 플레이 프레임</h2>
+  <div class="desc">이동거리(m) 기준</div>
 
-    <div class="field">
-      <div class="label">FPS</div>
-      <div class="input-row">
-        <input id="fps1" type="number" value="30">
-        <div class="unit">fps</div>
+  <div class="grid">
+    <!-- 입력 -->
+    <div>
+      <div class="field">
+        <div class="label">FPS</div>
+        <div class="input-row">
+          <input id="fps1" type="number" value="30">
+          <div class="unit">fps</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label">속력</div>
+        <div class="input-row">
+          <input id="speed1" type="number" value="5">
+          <div class="unit">km/h</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label">이동거리</div>
+        <div class="input-row">
+          <input id="distance1" type="number" value="10">
+          <div class="unit">m</div>
+        </div>
       </div>
     </div>
 
-    <div class="field">
-      <div class="label">속력</div>
-      <div class="input-row">
-        <input id="speed1" type="number" value="5">
-        <div class="unit">km/h</div>
-      </div>
-    </div>
-
-    <div class="field">
-      <div class="label">이동거리</div>
-      <div class="input-row">
-        <input id="distance1" type="number" value="1000">
-        <div class="unit">cm</div>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="results">
-      <div class="result-box" onclick="copyValue(this)">
-        <small>프레임 수</small>
-        <div id="frames1" class="value">0</div>
+    <!-- 결과 -->
+    <div class="result-column">
+      <div class="result-box" onclick="copy(frames1)">
+        <small>Frames</small>
+        <div id="frames1" class="result-value">0</div>
       </div>
 
-      <div class="result-box" onclick="copyValue(this)">
-        <small>시퀀서 재생 시간 (s)</small>
-        <div id="time1" class="value">0</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 카드 2 -->
-  <div class="card">
-    <h2>nDisplay의 이동거리</h2>
-    <div class="desc">시퀀서 재생 시간(s) 기준 이동거리(cm) 계산</div>
-
-    <div class="field">
-      <div class="label">FPS</div>
-      <div class="input-row">
-        <input id="fps2" type="number" value="30">
-        <div class="unit">fps</div>
-      </div>
-    </div>
-
-    <div class="field">
-      <div class="label">속력</div>
-      <div class="input-row">
-        <input id="speed2" type="number" value="5">
-        <div class="unit">km/h</div>
-      </div>
-    </div>
-
-    <div class="field">
-      <div class="label">시퀀서 재생 시간</div>
-      <div class="input-row">
-        <input id="time2" type="number" value="5">
-        <div class="unit">s</div>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="results">
-      <div class="result-box" onclick="copyValue(this)">
-        <small>이동거리 (cm)</small>
-        <div id="distance2" class="value">0</div>
-      </div>
-
-      <div class="result-box" onclick="copyValue(this)">
-        <small>프레임 수</small>
-        <div id="frames2" class="value">0</div>
+      <div class="result-box" onclick="copy(time1)">
+        <small>Time (s)</small>
+        <div id="time1" class="result-value">0</div>
       </div>
     </div>
   </div>
+</div>
+
+<!-- 카드 2 -->
+<div class="card">
+  <h2>nDisplay 이동거리</h2>
+  <div class="desc">시퀀서 재생 시간 기준</div>
+
+  <div class="grid">
+    <!-- 입력 -->
+    <div>
+      <div class="field">
+        <div class="label">FPS</div>
+        <div class="input-row">
+          <input id="fps2" type="number" value="30">
+          <div class="unit">fps</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label">속력</div>
+        <div class="input-row">
+          <input id="speed2" type="number" value="5">
+          <div class="unit">km/h</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label">재생 시간</div>
+        <div class="input-row">
+          <input id="time2" type="number" value="5">
+          <div class="unit">s</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 결과 -->
+    <div class="result-column">
+      <div class="result-box" onclick="copy(distance2)">
+        <small>Distance (cm)</small>
+        <div id="distance2" class="result-value">0</div>
+      </div>
+
+      <div class="result-box" onclick="copy(frames2)">
+        <small>Frames</small>
+        <div id="frames2" class="result-value">0</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 </div>
 
 <script>
 function calc() {
-  const fps1 = +fps1Input.value;
-  const speed1 = (+speed1Input.value / 3.6) * 100; // cm/s
-  const dist1 = +distance1Input.value; // cm
+  const fps1Val = +fps1.value;
+  const speed1Val = (+speed1.value / 3.6) * 100;
+  const dist1Val = +distance1.value * 100;
 
-  const time1Val = dist1 / speed1;
-  const frames1Val = time1Val * fps1;
+  const time1Calc = dist1Val / speed1Val;
+  frames1.textContent = (time1Calc * fps1Val).toFixed(2);
+  time1.textContent = time1Calc.toFixed(2);
 
-  frames1.textContent = frames1Val.toFixed(2);
-  time1.textContent = time1Val.toFixed(2);
+  const fps2Val = +fps2.value;
+  const speed2Val = (+speed2.value / 3.6) * 100;
+  const time2Val = +time2.value;
 
-  const fps2 = +fps2Input.value;
-  const speed2 = (+speed2Input.value / 3.6) * 100; // cm/s
-  const time2Val = +time2Input.value;
-
-  const dist2Val = speed2 * time2Val;
-  const frames2Val = fps2 * time2Val;
-
-  distance2.textContent = dist2Val.toFixed(1);
-  frames2.textContent = frames2Val.toFixed(0);
-}
- 
-function copyValue(box) {
-  const value = box.querySelector(".value").textContent;
-  navigator.clipboard.writeText(value);
+  distance2.textContent = (speed2Val * time2Val).toFixed(1);
+  frames2.textContent = (fps2Val * time2Val).toFixed(0);
 }
 
-const fps1Input = document.getElementById("fps1");
-const speed1Input = document.getElementById("speed1");
-const distance1Input = document.getElementById("distance1");
-
-const fps2Input = document.getElementById("fps2");
-const speed2Input = document.getElementById("speed2");
-const time2Input = document.getElementById("time2");
+function copy(el) {
+  navigator.clipboard.writeText(el.textContent);
+}
 
 document.querySelectorAll("input").forEach(i =>
   i.addEventListener("input", calc)
